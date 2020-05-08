@@ -32,4 +32,12 @@
             <version>3.15</version>
         </dependency>
     </dependencies>
+
+    
+    <properties>
+        <exec.mainClass>
+            ExcelFileUpdateExample1
+        </exec.mainClass>
+    </properties>
+
 </project>
