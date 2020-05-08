@@ -37,7 +37,7 @@ public class ExcelFileUpdateExample1 {
 				inputStream.close();
 			}
 			else{
-				workbook = new HSSFWorkbook();
+				workbook = new HSSFWorkbook();//uso el "hssfworbook" por que me permite crear un archivo desde 0 muy facilmente
 				workbook.createSheet("creada");// se crea una nueva hoja 
 			}
 
