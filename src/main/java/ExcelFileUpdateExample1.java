@@ -30,20 +30,31 @@ public class ExcelFileUpdateExample1 {
 		try {
 			File file = new File(excelFilePath);   // se crea una variable del archivo
 			Workbook workbook;
+
+			Sheet sheet;
 			
 			if (file.exists()){  //si el archivo existe se obtienen los datos de alli, y si no se crea uno nuevo
 				inputStream = new FileInputStream(file);
 				workbook = WorkbookFactory.create(inputStream);
 				inputStream.close();
+				sheet = workbook.getSheetAt(0);
 			}
 			else{
+				Object[] titulos = {"No","Book Title","Author","Price"};
 				workbook = new HSSFWorkbook();//uso el "hssfworbook" por que me permite crear un archivo desde 0 muy facilmente
-				workbook.createSheet("creada");// se crea una nueva hoja 
+				sheet = workbook.createSheet("Java Books 1");// se crea una nueva hoja 
+				Row row = sheet.createRow(0);
+				Cell cell;
+				int columnCount = 0;
+				for (Object titulo : titulos){
+					cell = row.createCell(columnCount);
+					cell.setCellValue((String) titulo);
+					columnCount++;
+				}
+				
 			}
-
-
-			Sheet sheet = workbook.getSheetAt(0);
-
+			
+			
 			Object[][] bookData = {
 					{"El que se duerme pierde", "Tom Peter", 16},
 					{"Sin lugar a duda", "Ana Gutierrez", 26},
@@ -72,31 +83,37 @@ public class ExcelFileUpdateExample1 {
 
 			}
 
-	
-			Iterator<Row> iterator = sheet.iterator(); //creamos el iterador sobre la hoja
-         
-       	 while (iterator.hasNext()) {
-            Row nextRow = iterator.next();
-            Iterator<Cell> cellIterator = nextRow.cellIterator(); //y tambien creamos el iterador sobre cada fila de la hoja
-																  //como 2 ciclos anidados
-            while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-                switch (cell.getCellType()) {   //dependiendo del tipo de datos de la celda hacemos el print correspondiente
-                    case Cell.CELL_TYPE_STRING:
-                        System.out.print(cell.getStringCellValue());
-                        break;
-                    case Cell.CELL_TYPE_BOOLEAN:
-                        System.out.print(cell.getBooleanCellValue());
-                        break;
-                    case Cell.CELL_TYPE_NUMERIC:
-                        System.out.print(cell.getNumericCellValue());
-                        break;
-                }
-                System.out.print(" - ");
-            }
-            System.out.println();
-         }
-			
+			Iterator<Sheet> sheets = workbook.iterator();
+
+			while (sheets.hasNext()){
+				Sheet nextSheet = sheets.next();
+				System.out.println("***************" + nextSheet.getSheetName() + "***************");
+				
+				Iterator<Row> iterator = nextSheet.iterator(); //creamos el iterador sobre la hoja
+
+				while (iterator.hasNext()) { 			  //como 3 ciclos anidados
+					Row nextRow = iterator.next();
+					Iterator<Cell> cellIterator = nextRow.cellIterator(); //y tambien creamos el iterador sobre cada fila de la hoja
+					
+					while (cellIterator.hasNext()) { 
+						Cell cell = cellIterator.next();
+        		    	switch (cell.getCellType()) {   //dependiendo del tipo de datos de la celda hacemos el print correspondiente
+							case Cell.CELL_TYPE_STRING:
+							System.out.print(cell.getStringCellValue());
+							break;
+							case Cell.CELL_TYPE_BOOLEAN:
+							System.out.print(cell.getBooleanCellValue());
+							break;
+							case Cell.CELL_TYPE_NUMERIC:
+							System.out.print(cell.getNumericCellValue());
+							break;
+						}
+						System.out.print(" - ");
+					}
+					System.out.println();
+				}
+			}
+			System.out.println("*********************************");
 
 			FileOutputStream outputStream = new FileOutputStream(excelFilePath);
 			workbook.write(outputStream);
