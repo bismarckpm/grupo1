@@ -25,7 +25,6 @@ public class ExcelFileUpdateExample1 {
 
 	public static void main(String[] args) {
 		String excelFilePath = "Inventario.xlsx";
-		int X=0;
 		try {
 			FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
 			Workbook workbook = WorkbookFactory.create(inputStream);
@@ -72,7 +71,7 @@ public class ExcelFileUpdateExample1 {
 				workbook.setActiveSheet(workbook.getActiveSheetIndex()+1);	//Cambio la hoja activa a la que acabo de crear
 
 			}
-			
+
 			while (sheets.hasNext()){
 				Sheet nextSheet = sheets.next();
 				System.out.println("***************" + nextSheet.getSheetName() + "***************");
