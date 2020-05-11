@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -128,11 +129,42 @@ public class ExcelFileUpdateExample1 {
 			}
 			System.out.println("*********************************");
 
+			//Actualización de un registro específico del archivo según su Nro. de Identificación.
+
+			Scanner scanner = new Scanner(System.in);
+			int choice;
+			choice = -1;
+			System.out.println("¿Desea realizar alguna modificación? (Escoja el número de su decisión).");
+			System.out.println("*********************************");
+			System.out.println("1. Si.");
+			System.out.println("0. No.");
+			while (choice != 0) {
+				choice = scanner.nextInt();
+				switch (choice) {
+					case 1:
+						choice = -1;
+						//Runtime.getRuntime().exec("cls");
+						System.out.println("¿Qué desea modificar?");
+						System.out.println("*********************************");
+						System.out.println("1. Author.");
+						System.out.println("2. Price.");
+						System.out.println("0. Salir.");
+						switch (choice){
+							case 1:
+								break;
+							case 2:
+								break;
+						}
+						break;
+				}
+			}
+			//Se cierra el archivo.
+
 			FileOutputStream outputStream = new FileOutputStream(excelFilePath);
 			workbook.write(outputStream);
 			workbook.close();
 			outputStream.close();
-			
+
 		} catch (IOException | EncryptedDocumentException
 				| InvalidFormatException ex) {
 			ex.printStackTrace();
