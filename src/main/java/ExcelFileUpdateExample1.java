@@ -129,32 +129,38 @@ public class ExcelFileUpdateExample1 {
 			}
 			System.out.println("*********************************");
 
-			//Actualización de un registro específico del archivo según su Nro. de Identificación.
+			//Menu de actualización de un registro específico del archivo según su Nro. de Identificación.
 
 			Scanner scanner = new Scanner(System.in);
-			int choice;
-			choice = -1;
-			System.out.println("¿Desea realizar alguna modificación? (Escoja el número de su decisión).");
-			System.out.println("*********************************");
-			System.out.println("1. Si.");
-			System.out.println("0. No.");
-			while (choice != 0) {
+			boolean mainLoop = true;
+			int choice = -1;
+			int id = 0;
+			while (mainLoop) {
+				System.out.println("¿Desea realizar alguna modificación? (Escoja el número de su decisión).");
+				System.out.println("*********************************");
+				System.out.println("1. Modificar Autor.");
+				System.out.println("2. Modificar Precio.");
+				System.out.println("0. Salir.");
+
 				choice = scanner.nextInt();
-				switch (choice) {
+
+				switch (choice){
+					case 0: //Salir
+						mainLoop = false;
+						break;
 					case 1:
-						choice = -1;
-						//Runtime.getRuntime().exec("cls");
-						System.out.println("¿Qué desea modificar?");
-						System.out.println("*********************************");
-						System.out.println("1. Author.");
-						System.out.println("2. Price.");
-						System.out.println("0. Salir.");
-						switch (choice){
-							case 1:
-								break;
-							case 2:
-								break;
-						}
+						Scanner input = new Scanner(System.in);
+
+						System.out.println(" Indique el id del registro a actualizar \n");
+						id = input.nextInt();
+						updateFile(id,"Author", excelFilePath);
+						break;
+					case 2:
+						Scanner input2 = new Scanner(System.in);
+
+						System.out.println(" Indique el id del registro a actualizar \n");
+						id = input2.nextInt();
+						updateFile(id,"Price", excelFilePath);
 						break;
 				}
 			}
@@ -171,4 +177,90 @@ public class ExcelFileUpdateExample1 {
 		}
 	}
 
+	static void updateFile(int id, String attribute, String excelFile) {
+		String value="";
+		int price=0, rowCount=0;
+		boolean loop = true;
+		Scanner input = new Scanner(System.in);
+		Scanner input2 = new Scanner(System.in);
+
+		try {
+			FileInputStream inputStream = new FileInputStream(new File(excelFile));
+			Workbook workbook = WorkbookFactory.create(inputStream);
+			Sheet sheet = workbook.getSheetAt(0);
+			rowCount = sheet.getLastRowNum();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		System.out.println("valor: "+excelFile);
+		if (attribute == "Author" && id <= rowCount) {
+			try {
+				FileInputStream inputStream = new FileInputStream(new File(excelFile));
+				Workbook workbook = WorkbookFactory.create(inputStream);
+
+				while(loop) {
+					System.out.print("\n Ingrese el nuevo autor del libro: ");
+
+					value = input.nextLine();
+
+					if (value=="") {
+						System.out.print("\n No se aceptan campos vacios. Debe ingresar un nombre.");
+					}else {
+						loop = false;
+					}
+				}
+				System.out.println("valor: "+value);
+				Sheet sheet = workbook.getSheetAt(0);
+				Cell cell2Update = sheet.getRow(id).getCell(2);
+				cell2Update.setCellValue(value);
+
+
+				inputStream.close();
+
+
+				FileOutputStream outputStream = new FileOutputStream(excelFile);
+				workbook.write(outputStream);
+				workbook.close();
+				outputStream.close();
+
+			} catch (IOException | EncryptedDocumentException
+					| InvalidFormatException ex) {
+				ex.printStackTrace();
+			}
+		}else if (attribute == "Price" && id <= rowCount) {
+			try {
+				FileInputStream inputStream = new FileInputStream(new File(excelFile));
+				Workbook workbook = WorkbookFactory.create(inputStream);
+
+				while(loop) {
+					System.out.print("\n Ingrese el nuevo valor para el Precio: ");
+
+					price = input2.nextInt();
+
+					if (price == 0) {
+						System.out.print("\n Por favor ingrese un valor: ");
+					}else {
+						loop = false;
+					}
+				}
+
+				Sheet sheet = workbook.getSheetAt(0);
+				Cell cell2Update = sheet.getRow(id).getCell(3);
+				cell2Update.setCellValue(price);
+
+				inputStream.close();
+
+				FileOutputStream outputStream = new FileOutputStream(excelFile);
+				workbook.write(outputStream);
+				workbook.close();
+				outputStream.close();
+
+			} catch (IOException | EncryptedDocumentException
+					| InvalidFormatException ex) {
+				ex.printStackTrace();
+			}
+		}else {
+			System.out.println("\nError: ese id no existe. Intente nuevamente.");
+		}
+	}
 }
